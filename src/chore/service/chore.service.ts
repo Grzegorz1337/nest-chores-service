@@ -1,7 +1,7 @@
 import { randomUUID, UUID } from 'crypto';
 import { ChoreDto } from '../model/chore.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ChoreRepository } from './chore.repository';
+import { ChoreRepository } from '../repo/chore.repository';
 import { Chore } from '../model/chore.schema';
 
 @Injectable()

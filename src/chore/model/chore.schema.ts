@@ -38,4 +38,4 @@ export class Chore {
   completed: boolean;
 }
 
-export const CatSchema = SchemaFactory.createForClass(Chore);
+export const ChoreSchema = SchemaFactory.createForClass(Chore);

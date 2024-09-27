@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ChoreController } from './controller/chore.controller';
 import { ChoreService } from './service/chore.service';
-import { ChoreRepository } from './service/chore.repository';
+import { ChoreRepository } from './repo/chore.repository';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Chore, ChoreSchema } from './model/chore.schema';
 
 @Module({
   controllers: [ChoreController],
@@ -26,6 +27,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         };
       },
     }),
+    MongooseModule.forFeature([{ name: Chore.name, schema: ChoreSchema }]),
   ],
 })
 export class ChoreModule {}
