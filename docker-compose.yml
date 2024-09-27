@@ -15,7 +15,7 @@ services:
       DATABASE_PASS: ${DATABASE_PASS}
       DATABASE_URI: ${DATABASE_URI}
     ports:
-      - '4000:4000'
+      - '3000:3000'
     depends_on:
       - database
 
@@ -27,5 +27,5 @@ services:
     ports:
       - '27017:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: # DATABASE_NAME
-      MONGO_INITDB_ROOT_PASSWORD: # DATABASE_USER
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_NAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_USER}

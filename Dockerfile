@@ -5,7 +5,7 @@ FROM node:16
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the container
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 # Install project dependencies
 RUN npm install
@@ -13,8 +13,11 @@ RUN npm install
 # Copy the rest of the application source code to the container
 COPY . .
 
+# Build application
+RUN npm run build
+
 # Expose the port your Nest.js application is listening on
 EXPOSE 3000
 
 # Command to start your Nest.js application
-CMD [ "npm", "run", "start:prod" ]
+CMD ["npm", "run", "start"]
