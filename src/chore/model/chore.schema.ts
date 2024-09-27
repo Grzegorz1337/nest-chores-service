@@ -26,13 +26,13 @@ export class Chore {
   creationDate: Date;
   @Prop()
   expirationDate: Date;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ChorePlace' })
+  @Prop()
   chorePlace: ChorePlace;
   @Prop()
   choreDescription: string;
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Person' })
   orderedBy: Person;
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Person' })
   orderedFor: Person;
   @Prop()
   completed: boolean;

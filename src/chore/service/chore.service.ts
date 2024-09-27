@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID, UUID } from 'crypto';
 import { ChoreDto } from '../model/chore.dto';
 import { Injectable } from '@nestjs/common';
 
@@ -15,10 +15,12 @@ export class ChoreService {
   }
 
   completeChore(choreId: UUID): ChoreDto {
-    let updatedChore = new ChoreDto();
+    const updatedChore = new ChoreDto();
     updatedChore.id = choreId;
 
     // TODO: Add query
+
+    return updatedChore;
   }
 
   createChore(newChore: ChoreDto) {
