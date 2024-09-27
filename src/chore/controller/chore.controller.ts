@@ -1,29 +1,39 @@
-import { Controller, Get, Patch, Post, Body, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Body,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ChoreService } from '../service/chore.service';
 import { ChoreDto } from '../model/chore.dto';
 import { UUID } from 'crypto';
+import { RestInterceptor } from 'src/logging/interceptor/rest.interceptor';
 
 @Controller('/chores')
+@UseInterceptors(RestInterceptor)
 export class ChoreController {
   constructor(private choreService: ChoreService) {}
 
   @Get()
-  getAllChores(): ChoreDto[] {
+  async getAllChores(): Promise<ChoreDto[]> {
     return this.choreService.getAllChores();
   }
 
   @Get('/active')
-  getActiveChores(): ChoreDto[] {
+  async getActiveChores(): Promise<ChoreDto[]> {
     return this.choreService.getActiveChores();
   }
 
   @Post()
-  createChore(@Body() newChore: ChoreDto): ChoreDto {
+  async createChore(@Body() newChore: ChoreDto): Promise<ChoreDto> {
     return this.choreService.createChore(newChore);
   }
 
   @Patch()
-  completeChore(@Query() choreId: UUID): ChoreDto {
+  async completeChore(@Query() choreId: UUID): Promise<ChoreDto> {
     return this.choreService.completeChore(choreId);
   }
 }

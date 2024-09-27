@@ -1,5 +1,5 @@
 # Use the official Node.js 16 image as the base image
-FROM node:16
+FROM node:22
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -20,4 +20,4 @@ RUN npm run build
 EXPOSE 3000
 
 # Command to start your Nest.js application
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:dev"]

@@ -1,6 +1,6 @@
 import { randomUUID, UUID } from 'crypto';
 import { ChoreDto } from '../model/chore.dto';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ChoreRepository } from './chore.repository';
 import { Chore } from '../model/chore.schema';
 
@@ -50,8 +50,18 @@ export class ChoreService {
   async deleteChoreById(choreId: UUID): Promise<ChoreDto> {
     const removedChore: ChoreDto = await this.choreRepository.findById(choreId);
 
+    if (removedChore === null) {
+      throw new HttpException('Unable to delete chore.', HttpStatus.NOT_FOUND, {
+        cause: new Error('Selected chore does not exist.'),
+      });
+    }
+
     if (!this.choreRepository.delete(removedChore.id)) {
-      throw Error('There was an error while trying to delete chore ' + choreId);
+      throw new HttpException(
+        'Unable to delete chore.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        { cause: new Error('Database remove operation failed.') },
+      );
     }
 
     return removedChore;
