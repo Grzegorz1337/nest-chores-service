@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ChoreController } from './controller/chore.controller';
 import { ChoreService } from './service/chore.service';
+import { ChoreRepository } from './service/chore.repository';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   controllers: [ChoreController],
-  providers: [ChoreService],
+  providers: [ChoreService, ChoreRepository],
   imports: [
     MongooseModule.forRootAsync({
       imports: [

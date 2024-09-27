@@ -1,29 +1,41 @@
 import { randomUUID, UUID } from 'crypto';
 import { ChoreDto } from '../model/chore.dto';
 import { Injectable } from '@nestjs/common';
+import { ChoreRepository } from './chore.repository';
+import { Chore } from '../model/chore.schema';
 
 @Injectable()
 export class ChoreService {
   readonly MAX_CHORE_DURATION_IN_DAYS: number = 30;
 
-  getAllChores(): ChoreDto[] {
-    throw new Error('Method not implemented.');
+  constructor(private readonly choreRepository: ChoreRepository) {}
+
+  getAllChores(): Promise<ChoreDto[]> {
+    return this.choreRepository.findAll();
   }
 
-  getActiveChores(): ChoreDto[] {
-    throw new Error('Method not implemented');
+  getActiveChores(): Promise<ChoreDto[]> {
+    return this.choreRepository.findActive();
   }
 
-  completeChore(choreId: UUID): ChoreDto {
-    const updatedChore = new ChoreDto();
-    updatedChore.id = choreId;
+  async completeChore(choreId: UUID): Promise<ChoreDto> {
+    const updatedChore: Chore = await this.choreRepository.findById(choreId);
 
-    // TODO: Add query
+    if (updatedChore.completed) {
+      throw Error(
+        'Chore ' + updatedChore.choreDescription + ' is already completed.',
+      );
+    }
 
-    return updatedChore;
+    updatedChore.completed = true;
+    if (this.choreRepository.update(updatedChore)) {
+      return updatedChore;
+    }
+
+    throw Error('Unable to complete chore');
   }
 
-  createChore(newChore: ChoreDto) {
+  async createChore(newChore: ChoreDto): Promise<ChoreDto> {
     newChore.id = randomUUID();
     newChore.creationDate = new Date();
     newChore.expirationDate = new Date();
@@ -32,8 +44,16 @@ export class ChoreService {
     );
     newChore.completed = false;
 
-    // TODO: Save in repo
+    return await this.choreRepository.save(newChore);
+  }
 
-    return newChore;
+  async deleteChoreById(choreId: UUID): Promise<ChoreDto> {
+    const removedChore: ChoreDto = await this.choreRepository.findById(choreId);
+
+    if (!this.choreRepository.delete(removedChore.id)) {
+      throw Error('There was an error while trying to delete chore ' + choreId);
+    }
+
+    return removedChore;
   }
 }
