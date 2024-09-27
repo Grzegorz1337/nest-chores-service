@@ -1,4 +1,3 @@
-import * as mongoose from 'mongoose';
 import { UUID } from 'crypto';
 import { ChorePlace } from './chore-place.enum';
 import { Person } from './person';
@@ -30,9 +29,19 @@ export class Chore {
   chorePlace: ChorePlace;
   @Prop()
   choreDescription: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Person' })
+  @Prop({
+    type: Object,
+    required: true,
+    get: (data: any) => new Person(data.name, data.surname),
+    set: (person: Person) => ({ name: person.name, surname: person.surname }),
+  })
   orderedBy: Person;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Person' })
+  @Prop({
+    type: Object,
+    required: true,
+    get: (data: any) => new Person(data.name, data.surname),
+    set: (person: Person) => ({ name: person.name, surname: person.surname }),
+  })
   orderedFor: Person;
   @Prop()
   completed: boolean;

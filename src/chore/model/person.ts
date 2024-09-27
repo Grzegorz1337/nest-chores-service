@@ -1,4 +1,6 @@
 export class Person {
-  name: string;
-  surename: string;
+  constructor(
+    public name: string,
+    public surname: string,
+  ) {}
 }
