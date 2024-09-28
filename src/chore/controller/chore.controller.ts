@@ -7,7 +7,6 @@ import {
   UseInterceptors,
   Param,
   Delete,
-  HttpStatus,
 } from '@nestjs/common';
 import { ChoreService } from '../service/chore.service';
 import { ChoreDto } from '../model/chore.dto';
