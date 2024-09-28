@@ -6,6 +6,8 @@ import {
   Body,
   UseInterceptors,
   Param,
+  Delete,
+  HttpStatus,
 } from '@nestjs/common';
 import { ChoreService } from '../service/chore.service';
 import { ChoreDto } from '../model/chore.dto';
@@ -19,26 +21,31 @@ export class ChoreController {
 
   @Get()
   async getAllChores(): Promise<ChoreDto[]> {
-    return this.choreService.getAllChores();
+    return await this.choreService.getAllChores();
   }
 
   @Get('/:id')
   async getChoreById(@Param('id') id: UUID): Promise<ChoreDto> {
-    return this.choreService.getChoreById(id);
+    return await this.choreService.getChoreById(id);
   }
 
   @Get('/active')
   async getActiveChores(): Promise<ChoreDto[]> {
-    return this.choreService.getActiveChores();
+    return await this.choreService.getActiveChores();
   }
 
   @Post()
   async createChore(@Body() newChore: ChoreDto): Promise<ChoreDto> {
-    return this.choreService.createChore(newChore);
+    return await this.choreService.createChore(newChore);
   }
 
-  @Patch()
-  async completeChore(@Param() choreId: UUID): Promise<ChoreDto> {
-    return this.choreService.completeChore(choreId);
+  @Patch('/:id')
+  async completeChore(@Param('id') choreId: UUID): Promise<ChoreDto> {
+    return await this.choreService.completeChore(choreId);
+  }
+
+  @Delete('/:id')
+  async deleteChore(@Param('id') choreId: UUID): Promise<ChoreDto> {
+    return await this.choreService.deleteChoreById(choreId);
   }
 }
