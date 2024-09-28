@@ -4,8 +4,8 @@ import {
   Patch,
   Post,
   Body,
-  Query,
   UseInterceptors,
+  Param,
 } from '@nestjs/common';
 import { ChoreService } from '../service/chore.service';
 import { ChoreDto } from '../model/chore.dto';
@@ -33,7 +33,7 @@ export class ChoreController {
   }
 
   @Patch()
-  async completeChore(@Query() choreId: UUID): Promise<ChoreDto> {
+  async completeChore(@Param() choreId: UUID): Promise<ChoreDto> {
     return this.choreService.completeChore(choreId);
   }
 }

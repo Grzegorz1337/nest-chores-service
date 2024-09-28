@@ -36,8 +36,7 @@ export class ChoreRepository {
   }
 
   async save(newChore: ChoreDto): Promise<Chore> {
-    const createdChore = new this.choreModel(newChore);
-    return createdChore.save();
+    return new this.choreModel(newChore).save();
   }
 
   async delete(choreId: UUID): Promise<boolean> {

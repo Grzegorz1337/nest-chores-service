@@ -4,17 +4,6 @@ import { Person } from './person';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export class ChoreDto {
-  id: UUID;
-  creationDate: Date;
-  expirationDate: Date;
-  chorePlace: ChorePlace;
-  choreDescription: string;
-  orderedBy: Person;
-  orderedFor: Person;
-  completed: boolean;
-}
-
 export type ChoreDocument = HydratedDocument<Chore>;
 
 @Schema()
