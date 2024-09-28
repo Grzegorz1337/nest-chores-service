@@ -23,7 +23,7 @@ export class ChoreRepository {
   }
 
   async findById(requestedId: UUID): Promise<Chore> {
-    return this.choreModel.findOne({ id: requestedId });
+    return await this.choreModel.findOne({ id: requestedId });
   }
 
   async update(updatedChore: ChoreDto): Promise<boolean> {

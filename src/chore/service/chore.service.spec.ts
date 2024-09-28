@@ -175,8 +175,14 @@ describe('ChoreService', () => {
     const choreId = randomUUID();
     mockChoreRepository.findById.mockResolvedValue(null);
 
-    await expect(service.deleteChoreById(choreId)).rejects.toThrow(
-      new HttpException('Unable to delete chore.', HttpStatus.NOT_FOUND),
+    expect(service.deleteChoreById(choreId)).toThrow(
+      new HttpException(
+        {
+          message: 'Unable to delete chore.',
+          cause: { message: 'Selected chore does not exist.' },
+        },
+        HttpStatus.NOT_FOUND,
+      ),
     );
   });
 
@@ -195,10 +201,11 @@ describe('ChoreService', () => {
     mockChoreRepository.findById.mockResolvedValue(chore);
     mockChoreRepository.delete.mockResolvedValue(false);
 
-    await expect(service.deleteChoreById(choreId)).rejects.toThrow(
+    expect(service.deleteChoreById(choreId)).toThrow(
       new HttpException(
         'Unable to delete chore.',
         HttpStatus.INTERNAL_SERVER_ERROR,
+        { cause: new Error('Database remove operation failed.') },
       ),
     );
   });

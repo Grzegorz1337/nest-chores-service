@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('ChoresController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -15,10 +15,14 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('GET /chores', () => {
+    return request(app.getHttpServer()).get('/chores').expect(200).expect([]);
+  });
+
+  it('GET /chores/active', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/chores/active')
       .expect(200)
-      .expect('Hello World!');
+      .expect([]);
   });
 });
