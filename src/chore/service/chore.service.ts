@@ -10,12 +10,12 @@ export class ChoreService {
 
   constructor(private readonly choreRepository: ChoreRepository) {}
 
-  getAllChores(): Promise<ChoreDto[]> {
-    return this.choreRepository.findAll();
+  async getAllChores(): Promise<ChoreDto[]> {
+    return await this.choreRepository.findAll();
   }
 
-  getActiveChores(): Promise<ChoreDto[]> {
-    return this.choreRepository.findActive();
+  async getActiveChores(): Promise<ChoreDto[]> {
+    return await this.choreRepository.findActive();
   }
 
   async completeChore(choreId: UUID): Promise<ChoreDto> {
@@ -28,7 +28,7 @@ export class ChoreService {
     }
 
     updatedChore.completed = true;
-    if (this.choreRepository.update(updatedChore)) {
+    if (await this.choreRepository.update(updatedChore)) {
       return updatedChore;
     }
 
