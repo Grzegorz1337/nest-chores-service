@@ -11,20 +11,40 @@ export class ChoreService {
   constructor(private readonly choreRepository: ChoreRepository) {}
 
   async getAllChores(): Promise<ChoreDto[]> {
-    return await this.choreRepository.findAll();
+    const results: ChoreDto[] = await this.choreRepository.findAll();
+
+    if (results.length === 0) {
+      throw new HttpException('No entity found', HttpStatus.NOT_FOUND);
+    }
+
+    return results;
+  }
+
+  async getChoreById(id: UUID): Promise<ChoreDto> {
+    const result: Chore = await this.choreRepository.findById(id);
+
+    if (result === null || result === undefined) {
+      throw new HttpException('No entity found', HttpStatus.NOT_FOUND);
+    }
+
+    return result;
   }
 
   async getActiveChores(): Promise<ChoreDto[]> {
-    return await this.choreRepository.findActive();
+    const results: ChoreDto[] = await this.choreRepository.findActive();
+
+    if (results.length === 0) {
+      throw new HttpException('No entity found', HttpStatus.NOT_FOUND);
+    }
+
+    return results;
   }
 
   async completeChore(choreId: UUID): Promise<ChoreDto> {
     const updatedChore: Chore = await this.choreRepository.findById(choreId);
 
     if (updatedChore.completed) {
-      throw Error(
-        'Chore ' + updatedChore.choreDescription + ' is already completed.',
-      );
+      throw new HttpException('Cannot complete chore', HttpStatus.BAD_REQUEST);
     }
 
     updatedChore.completed = true;
@@ -32,7 +52,11 @@ export class ChoreService {
       return updatedChore;
     }
 
-    throw Error('Unable to complete chore');
+    // TODO: Add error handling for repo write denial
+    throw new HttpException(
+      'Cannot complete chore, fix repo update',
+      HttpStatus.I_AM_A_TEAPOT,
+    );
   }
 
   async createChore(newChore: ChoreDto): Promise<ChoreDto> {
@@ -56,6 +80,7 @@ export class ChoreService {
       });
     }
 
+    // TODO: Same as above make it more pleasant to look at
     if (!this.choreRepository.delete(removedChore.id)) {
       throw new HttpException(
         'Unable to delete chore.',

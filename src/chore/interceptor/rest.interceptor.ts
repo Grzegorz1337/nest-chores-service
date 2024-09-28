@@ -5,6 +5,8 @@ import {
   CallHandler,
   RequestTimeoutException,
   Logger,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Observable, throwError, TimeoutError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -13,7 +15,7 @@ import { catchError, tap } from 'rxjs/operators';
 export class RestInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now();
-    console.log(`Request recieved at ${now}`);
+    console.log(`Request recieved...`);
 
     return next.handle().pipe(
       tap(() => console.log(`Request processed in ${Date.now() - now}ms`)),
@@ -21,6 +23,16 @@ export class RestInterceptor implements NestInterceptor {
         Logger.error(err);
         if (err instanceof TimeoutError) {
           return throwError(() => new RequestTimeoutException());
+        }
+        if (err instanceof TypeError) {
+          return throwError(
+            () =>
+              new HttpException(
+                'Value is out of domain',
+                HttpStatus.BAD_REQUEST,
+                { cause: new Error('Incorrect chore place') },
+              ),
+          );
         }
       }),
     );

@@ -10,7 +10,7 @@ import {
 import { ChoreService } from '../service/chore.service';
 import { ChoreDto } from '../model/chore.dto';
 import { UUID } from 'crypto';
-import { RestInterceptor } from 'src/logging/interceptor/rest.interceptor';
+import { RestInterceptor } from '../interceptor/rest.interceptor';
 
 @Controller('/chores')
 @UseInterceptors(RestInterceptor)
@@ -20,6 +20,11 @@ export class ChoreController {
   @Get()
   async getAllChores(): Promise<ChoreDto[]> {
     return this.choreService.getAllChores();
+  }
+
+  @Get('/:id')
+  async getChoreById(@Param('id') id: UUID): Promise<ChoreDto> {
+    return this.choreService.getChoreById(id);
   }
 
   @Get('/active')

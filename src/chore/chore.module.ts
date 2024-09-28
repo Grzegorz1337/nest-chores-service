@@ -5,10 +5,11 @@ import { ChoreRepository } from './repo/chore.repository';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Chore, ChoreSchema } from './model/chore.schema';
+import { RestInterceptor } from './interceptor/rest.interceptor';
 
 @Module({
   controllers: [ChoreController],
-  providers: [ChoreService, ChoreRepository],
+  providers: [ChoreService, ChoreRepository, RestInterceptor],
   imports: [
     MongooseModule.forRootAsync({
       imports: [

@@ -3,7 +3,6 @@
 
 version: '3.8'
 services:
-  # app service for your backend
   app:
     container_name: chore-service
     build:
