@@ -19,6 +19,14 @@ describe('ChoresController (e2e)', () => {
     await request(app.getHttpServer()).get('/chores').expect(200).expect([]);
   });
 
+  // TODO: add population of database with some example data
+  it('GET /chores/choreId', async () => {
+    await request(app.getHttpServer())
+      .get('/chores/1-1-1-1')
+      .expect(200)
+      .expect([]);
+  });
+
   it('GET /chores/active', async () => {
     await request(app.getHttpServer())
       .get('/chores/active')
@@ -54,6 +62,22 @@ describe('ChoresController (e2e)', () => {
         expect(body.creationDate).toBeDefined();
         expect(body.expirationDate).toBeDefined();
       });
+  });
+
+  // TODO: Add data population
+  it('PATCH /chores/choreId', async () => {
+    await request(app.getHttpServer())
+      .patch('/chores/1-1-1-1')
+      .expect(200)
+      .expect([]);
+  });
+
+  // TODO: Add data population
+  it('DELETE /chores/choreId', async () => {
+    await request(app.getHttpServer())
+      .delete('/chores/1-1-1-1')
+      .expect(200)
+      .expect([]);
   });
 
   afterAll(async () => {

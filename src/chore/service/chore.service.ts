@@ -80,7 +80,7 @@ export class ChoreService {
       });
     }
 
-    // TODO: Same as above make it more pleasant to look at
+    // TODO: Same as above make it more pleasant to look
     if (!this.choreRepository.delete(removedChore.id)) {
       throw new HttpException(
         'Unable to delete chore.',
