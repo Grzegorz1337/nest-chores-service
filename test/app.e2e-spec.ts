@@ -1,24 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from './../src/app.module';
-import * as typeorm from 'typeorm';
 import * as request from 'supertest';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { ChorePlace } from '../src/chore/model/chore-place.enum';
 import { Chore } from '../src/chore/model/chore.schema';
 import { randomUUID } from 'crypto';
+import { getModelToken } from '@nestjs/mongoose'; // For Mongoose
+import { Model } from 'mongoose'; // Mongoose model
 
 describe('ChoresController (e2e)', () => {
   let app: INestApplication;
-  let choreRepository: typeorm.Repository<Chore>;
+  let choreModel: Model<Chore>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-    choreRepository = moduleFixture.get<typeorm.Repository<Chore>>(
-      getRepositoryToken(Chore),
-    );
+    choreModel = moduleFixture.get<Model<Chore>>(getModelToken(Chore.name));
 
     app = moduleFixture.createNestApplication();
 
@@ -37,11 +35,21 @@ describe('ChoresController (e2e)', () => {
         orderedFor: { name: 'Kamil', surname: 'Grzeczkowski' },
         completed: false,
       };
-      await choreRepository.save(chore);
+      await new choreModel(chore).save();
       await request(app.getHttpServer())
         .get('/chores')
         .expect(200)
-        .expect([chore]);
+        .expect((res) => {
+          expect(res.body).toHaveLength(1);
+          expect(res.body[0].chorePlace).toEqual(chore.chorePlace);
+          expect(res.body[0].choreDescription).toEqual(chore.choreDescription);
+          expect(res.body[0].orderedBy).toBeDefined();
+          expect(res.body[0].orderedFor).toBeDefined();
+          expect(res.body[0].completed).toEqual(chore.completed);
+          expect(res.body[0].id).toBeDefined();
+          expect(res.body[0].creationDate).toBeDefined();
+          expect(res.body[0].expirationDate).toBeDefined();
+        });
     });
 
     it('Returns 404 when no chore is in database', async () => {
@@ -61,7 +69,7 @@ describe('ChoresController (e2e)', () => {
         orderedFor: { name: 'Kamil', surname: 'Grzeczkowski' },
         completed: false,
       };
-      await choreRepository.save(chore);
+      await new choreModel(chore).save();
       await request(app.getHttpServer())
         .get(`/chores/${chore.id}`)
         .expect(200)
@@ -85,7 +93,7 @@ describe('ChoresController (e2e)', () => {
         orderedFor: { name: 'Kamil', surname: 'Grzeczkowski' },
         completed: false,
       };
-      await choreRepository.save(chore);
+      await new choreModel(chore).save();
       await request(app.getHttpServer())
         .get('/chores/active')
         .expect(200)
@@ -126,7 +134,7 @@ describe('ChoresController (e2e)', () => {
         expect(body.expirationDate).toBeDefined();
       });
     expect(
-      await choreRepository.existsBy({
+      await choreModel.findOne({
         choreDescription: 'Bring some logs for fireplace',
       }),
     ).toBeTruthy();
@@ -143,9 +151,11 @@ describe('ChoresController (e2e)', () => {
       orderedFor: { name: 'Kamil', surname: 'Grzeczkowski' },
       completed: false,
     };
-    await choreRepository.save(chore);
+    await new choreModel(chore).save();
     await request(app.getHttpServer()).patch(`/chores/${chore.id}`).expect(200);
-    const updatedChore = await choreRepository.findOneBy({ id: chore.id });
+    const updatedChore = await choreModel.findOne({ id: chore.id });
+    expect(updatedChore).toBeDefined();
+    console.log(updatedChore);
     expect(updatedChore.completed).toBe(true);
   });
 
@@ -160,16 +170,25 @@ describe('ChoresController (e2e)', () => {
       orderedFor: { name: 'Kamil', surname: 'Grzeczkowski' },
       completed: false,
     };
-    await choreRepository.save(chore);
+    await new choreModel(chore).save();
     await request(app.getHttpServer())
       .delete(`/chores/${chore.id}`)
       .expect(200)
-      .expect([]);
-    expect(await choreRepository.existsBy({ id: chore.id })).toBeFalsy();
+      .expect((res) => {
+        expect(res.body.chorePlace).toEqual(chore.chorePlace);
+        expect(res.body.choreDescription).toEqual(chore.choreDescription);
+        expect(res.body.orderedBy).toBeDefined();
+        expect(res.body.orderedFor).toBeDefined();
+        expect(res.body.completed).toEqual(chore.completed);
+        expect(res.body.id).toBeDefined();
+        expect(res.body.creationDate).toBeDefined();
+        expect(res.body.expirationDate).toBeDefined();
+      });
+    expect(await choreModel.findOne({ id: chore.id })).toBeFalsy();
   });
 
   afterEach(async () => {
-    await choreRepository.clear();
+    await choreModel.deleteMany({});
   });
 
   afterAll(async () => {

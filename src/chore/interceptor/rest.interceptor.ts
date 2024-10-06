@@ -7,6 +7,7 @@ import {
   Logger,
   HttpException,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { Observable, throwError, TimeoutError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -15,10 +16,12 @@ import { catchError, tap } from 'rxjs/operators';
 export class RestInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now();
-    console.log(`Request recieved...`);
 
     return next.handle().pipe(
-      tap(() => console.log(`Request processed in ${Date.now() - now}ms`)),
+      tap((data) => {
+        if (data === undefined) throw new NotFoundException();
+        console.log(`Request processed in ${Date.now() - now}ms`);
+      }),
       catchError((err) => {
         Logger.error(err);
         if (err instanceof TimeoutError) {

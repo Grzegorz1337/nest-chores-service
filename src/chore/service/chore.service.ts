@@ -48,15 +48,17 @@ export class ChoreService {
     }
 
     updatedChore.completed = true;
-    if (await this.choreRepository.update(updatedChore)) {
-      return updatedChore;
-    }
+    const valueUpdated: boolean =
+      await this.choreRepository.update(updatedChore);
 
-    // TODO: Add error handling for repo write denial
-    throw new HttpException(
-      'Cannot complete chore, fix repo update',
-      HttpStatus.I_AM_A_TEAPOT,
-    );
+    if (!valueUpdated) {
+      // TODO: Add error handling for repo write denial
+      throw new HttpException(
+        'Cannot complete chore, fix repo update',
+        HttpStatus.I_AM_A_TEAPOT,
+      );
+    }
+    return updatedChore;
   }
 
   async createChore(newChore: ChoreDto): Promise<ChoreDto> {
