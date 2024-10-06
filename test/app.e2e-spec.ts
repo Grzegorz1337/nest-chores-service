@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import * as typeorm from 'typeorm';
+import * as request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ChorePlace } from 'src/chore/model/chore-place.enum';
-import { Chore } from 'src/chore/model/chore.schema';
+import { ChorePlace } from '../src/chore/model/chore-place.enum';
+import { Chore } from '../src/chore/model/chore.schema';
 import { randomUUID } from 'crypto';
 
 describe('ChoresController (e2e)', () => {
@@ -25,7 +25,7 @@ describe('ChoresController (e2e)', () => {
     await app.init();
   });
 
-  describe('GET /chores', async () => {
+  describe('GET /chores', () => {
     it('Returns chore list when there are chores present', async () => {
       const chore = {
         id: randomUUID(),
@@ -49,7 +49,7 @@ describe('ChoresController (e2e)', () => {
     });
   });
 
-  describe('GET /chores/choreId', async () => {
+  describe('GET /chores/choreId', () => {
     it('Returns a chore when id is valid', async () => {
       const chore = {
         id: randomUUID(),
@@ -73,7 +73,7 @@ describe('ChoresController (e2e)', () => {
     });
   });
 
-  describe('GET /chores/active', async () => {
+  describe('GET /chores/active', () => {
     it('Returns list of active chores if any is present', async () => {
       const chore = {
         id: randomUUID(),
