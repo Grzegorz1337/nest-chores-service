@@ -37,12 +37,13 @@ export class ChoreService {
       throw new HttpException('No entity found', HttpStatus.NOT_FOUND);
     }
 
+    console.log('getting active chores', results);
+
     return results;
   }
 
   async completeChore(choreId: UUID): Promise<ChoreDto> {
     const updatedChore: Chore = await this.choreRepository.findById(choreId);
-
     if (updatedChore.completed) {
       throw new HttpException('Cannot complete chore', HttpStatus.BAD_REQUEST);
     }

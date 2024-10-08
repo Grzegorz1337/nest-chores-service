@@ -27,12 +27,11 @@ export class ChoreRepository {
   }
 
   async update(updatedChore: ChoreDto): Promise<boolean> {
-    return (
-      await this.choreModel.replaceOne(
-        { id: updatedChore.id },
-        { updatedChore },
-      )
-    ).acknowledged;
+    const result = await this.choreModel.updateOne(
+      { id: updatedChore.id },
+      { $set: { completed: updatedChore.completed } },
+    );
+    return result.modifiedCount > 0;
   }
 
   async save(newChore: ChoreDto): Promise<Chore> {
